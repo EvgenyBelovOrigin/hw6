@@ -42,7 +42,7 @@ class WallServiceTest {
     }
 
     @Test
-    fun wallService_commentAddedSuccess() {
+    fun wallService_commentAdditionSuccess() {
         val post1 = Post("Hello")
         WallService.add(post1)
         val comment1 = Comment(1, "Comment added")
@@ -53,11 +53,43 @@ class WallServiceTest {
     }
 
     @Test(expected = PostNotFoundException::class)
-    fun shouldThrow() {
+    fun shouldThrowPostNotFound() {
         val post1 = Post("Hello")
         WallService.add(post1)
         val comment1 = Comment(1, "Comment added")
         WallService.createComment(11358, comment1)
+    }
+
+    @Test
+    fun wallService_reportCommentAdditionSuccess() {
+        val post1 = Post("Hello")
+        WallService.add(post1)
+        val comment1 = Comment(1, "Comment added")
+        WallService.createComment(11357, comment1)
+        val reportComment1 = ReportComment(15, 1, 7)
+        val result = WallService.createReportComment(reportComment1)
+        assertEquals(result, reportComment1)
+
+
+    }
+
+    @Test(expected = CommentNotFoundException::class)
+    fun shouldThrowCommentNotFound() {
+        val post1 = Post("Hello")
+        WallService.add(post1)
+        val comment1 = Comment(1, "Comment added")
+        WallService.createComment(11357, comment1)
+        val reportComment1 = ReportComment(15, 2, 7)
+        WallService.createReportComment(reportComment1)
+    }
+    @Test(expected = ReasonNotFoundException::class)
+    fun shouldThrowReasonNotFound() {
+        val post1 = Post("Hello")
+        WallService.add(post1)
+        val comment1 = Comment(1, "Comment added")
+        WallService.createComment(11357, comment1)
+        val reportComment1 = ReportComment(15, 1, 9)
+        WallService.createReportComment(reportComment1)
     }
 
 

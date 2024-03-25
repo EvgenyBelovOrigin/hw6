@@ -35,9 +35,10 @@ data class Comment(
     val attachments: Array<Attachment>? = null,
     val parentsStack: Array<ParentsId>? = null,
     val thread: Thread? = null,
+    var reportComment: Array<ReportComment>? = null
 
 
-    ) {
+) {
     class Donut(
         val isDon: Boolean,
         val placeholder: String
@@ -55,6 +56,9 @@ data class Comment(
 }
 
 class PostNotFoundException(message: String) : RuntimeException(message)
+class CommentNotFoundException(message: String) : RuntimeException(message)
+class ReasonNotFoundException(message: String) : RuntimeException(message)
+data class ReportComment(val ownerId: Int, val commentId: Int, val reason: Int)
 
 
 object WallService {
@@ -62,6 +66,30 @@ object WallService {
 
     private var posts = emptyArray<Post>()
     private var comments = emptyArray<Comment>()
+    private var reportComments = emptyArray<ReportComment>()
+
+    fun createReportComment(reportComment: ReportComment): ReportComment {
+        for (comment in comments) {
+
+            for (comment in comments) {
+                when {
+                    reportComment.reason < 0 || reportComment.reason > 8 ->
+                        return throw ReasonNotFoundException(
+                            "Reason № of report should be from 0 to 8 but current is ${reportComment.reason}"
+                        )
+
+                    reportComment.commentId == comment.id -> run {
+                        reportComments += reportComment;
+                        return reportComments.last()
+                    }
+
+                }
+            }
+
+        }
+        return throw CommentNotFoundException("Comment with ID ${reportComment.commentId} doesn't exist")
+
+    }
 
 
     fun createComment(postId: Int, comment: Comment): Comment {
@@ -110,6 +138,12 @@ object WallService {
         }
     }
 
+    fun printReportComment() {
+        for ((index) in reportComments.withIndex()) {
+            println("$index reason: ${reportComments.get(index).reason}")
+        }
+    }
+
 
 }
 
@@ -118,11 +152,22 @@ fun main() {
     val post1 = Post("Hello")
     val post2 = Post("Bonjour")
     val post3 = Post("Ni Hao")
-    val comment1 = Comment(1, "Comment added")
+    val comment1 = Comment(1, "First comment")
+    val comment2 = Comment(2, "Second comment")
+    val comment3 = Comment(3, "Third comment")
+    val reportComment1 = ReportComment(15, 1, 7)
+    val reportComment2 = ReportComment(155, 1, 1)
+
     WallService.add((post1))
     WallService.add(post2)
     WallService.add(post3)
     WallService.createComment(11359, comment1)
+    WallService.createComment(11357, comment2)
+    WallService.createReportComment(reportComment1)
+    WallService.createReportComment(reportComment2)
+
+    WallService.printReportComment()
+
 //    WallService.createComment(11358, comment1)
 
     WallService.printComment()
