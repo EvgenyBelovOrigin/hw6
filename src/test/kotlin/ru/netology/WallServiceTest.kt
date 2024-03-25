@@ -82,6 +82,7 @@ class WallServiceTest {
         val reportComment1 = ReportComment(15, 2, 7)
         WallService.createReportComment(reportComment1)
     }
+
     @Test(expected = ReasonNotFoundException::class)
     fun shouldThrowReasonNotFound() {
         val post1 = Post("Hello")

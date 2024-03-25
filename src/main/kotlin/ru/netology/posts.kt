@@ -58,7 +58,11 @@ data class Comment(
 class PostNotFoundException(message: String) : RuntimeException(message)
 class CommentNotFoundException(message: String) : RuntimeException(message)
 class ReasonNotFoundException(message: String) : RuntimeException(message)
-data class ReportComment(val ownerId: Int, val commentId: Int, val reason: Int)
+data class ReportComment(
+    val ownerId: Int,
+    val commentId: Int,
+    val reason: Int
+)
 
 
 object WallService {
@@ -125,52 +129,9 @@ object WallService {
         posts = emptyArray()
         id = 11357
     }
-
-    fun printPosts() {
-        for (post in posts) {
-            println("ID: ${post.id} Post: ${post.text} Comment: ${post.comments?.get(0)?.text}")
-        }
-    }
-
-    fun printComment() {
-        for ((index) in comments.withIndex()) {
-            println("$index text: ${comments.get(index).text}")
-        }
-    }
-
-    fun printReportComment() {
-        for ((index) in reportComments.withIndex()) {
-            println("$index reason: ${reportComments.get(index).reason}")
-        }
-    }
-
-
 }
 
 
 fun main() {
-    val post1 = Post("Hello")
-    val post2 = Post("Bonjour")
-    val post3 = Post("Ni Hao")
-    val comment1 = Comment(1, "First comment")
-    val comment2 = Comment(2, "Second comment")
-    val comment3 = Comment(3, "Third comment")
-    val reportComment1 = ReportComment(15, 1, 7)
-    val reportComment2 = ReportComment(155, 1, 1)
-
-    WallService.add((post1))
-    WallService.add(post2)
-    WallService.add(post3)
-    WallService.createComment(11359, comment1)
-    WallService.createComment(11357, comment2)
-    WallService.createReportComment(reportComment1)
-    WallService.createReportComment(reportComment2)
-
-    WallService.printReportComment()
-
-//    WallService.createComment(11358, comment1)
-
-    WallService.printComment()
-
 
 }
